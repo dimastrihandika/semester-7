@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cryptocurrency Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border: 2px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+      border-bottom: 2px solid #ddd; 
+    }
+    tbody {
+      border-top: 2px solid #ddd; 
+      border-bottom: 2px solid #ddd;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="getData()">Get Data</button>
+
+  <table id="cryptoTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Harga (USD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be inserted here using JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    function getData() {
+      // Reference to the table body
+      const tableBody = document.querySelector('#cryptoTable tbody');
+
+      // Clear existing data
+      tableBody.innerHTML = '';
+
+      // Fetch data from API
+      fetch('https://api.coinlore.net/api/tickers/')
+        .then(response => response.json())
+        .then(data => {
+          // Extract relevant information
+          const cryptocurrencies = data.data;
+
+          cryptocurrencies.forEach(crypto => {
+            const row = tableBody.insertRow();
+            const nameCell = row.insertCell(0);
+            const symbolCell = row.insertCell(1);
+            const priceCell = row.insertCell(2);
+
+            nameCell.textContent = crypto.name;
+            symbolCell.textContent = crypto.symbol;
+            priceCell.textContent = `$${parseFloat(crypto.price_usd).toFixed(2)}`;
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Initial data load
+    getData();
+  </script>
+
+</body>
+</html>
