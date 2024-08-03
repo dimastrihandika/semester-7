@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cryptocurrency Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border: 2px solid #ddd; 
+    }
+    td {
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid #ddd; 
+    }
+    tbody {
+      border-top: 2px solid #ddd; 
+      border-bottom: 2px solid #ddd; 
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: blue; 
+      color: white; 
+      border: none;
+      border-radius: 5px; 
+    }
+    .usd-label {
+      font-size: 12px;
+    }
+    .even-row {
+      background-color: #ffffcc; 
+    }
+    .rank {
+      font-size: 12px; 
+      margin-bottom: -4px;
+      text-align: center;
+      margin-right: 100px;
+    }
+    .number {
+      font-size: 16px; 
+      font-weight: bold;
+      text-align: center;
+      margin-right: 100px;
+    }
+    .top {
+      font-size: 12px; 
+      margin-bottom: -4px;
+      text-align: left;
+    }
+    .bottom {
+      font-size: 16px; 
+      font-weight: bold;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+
+  <button onclick="getData()">Refresh</button>
+
+  <table id="cryptoTable">
+    <tbody>
+      <!-- Data will be inserted here using JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    function getData() {
+      // Reference to the table body
+      const tableBody = document.querySelector('#cryptoTable tbody');
+
+      // Clear existing data
+      tableBody.innerHTML = '';
+
+      // Fetch new data from the API
+      fetch('https://api.coinlore.net/api/tickers/')
+        .then(response => response.json())
+        .then(data => {
+          // Extract relevant information
+          const cryptocurrencies = data.data;
+
+          // Loop through the data and populate the table
+          cryptocurrencies.forEach((crypto, index) => {
+            // Create a new row for each cryptocurrency
+            const row = tableBody.insertRow();
+
+            // Create cells for Rank, Name, Symbol, and Price (USD)
+            const rankCell = row.insertCell(0);
+            const nameCell = row.insertCell(1);
+            const symbolCell = row.insertCell(2);
+            const priceCell = row.insertCell(3);
+
+            // Populate the cells with data from the API
+            rankCell.innerHTML = `<div class="rank">Rank</div><br><div class="number">${index + 1}</div>`;
+            nameCell.innerHTML = `<div class="top">${crypto.name}</div><br><div class="bottom">${crypto.symbol}</div>`;
+            priceCell.innerHTML = `<div class="top">USD</div><br><div class="bottom">$${parseFloat(crypto.price_usd).toFixed(2)}</div>`;
+
+            // Add a class to every row for background color
+            row.classList.add('even-row');
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Initial data load
+    getData();
+  </script>
+
+</body>
+</html>
